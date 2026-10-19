@@ -1,7 +1,7 @@
 package cl.duoc.activaciones.ui
 
 import cl.duoc.activaciones.model.EstadoOportunidad
-import cl.duoc.activaciones.viewmodel.OportunidadUiState
+import cl.duoc.activaciones.ui.oportunidad.OportunidadUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

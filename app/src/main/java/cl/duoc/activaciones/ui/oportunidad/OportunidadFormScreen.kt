@@ -1,4 +1,4 @@
-package cl.duoc.activaciones.ui.screen
+package cl.duoc.activaciones.ui.oportunidad
 
 import android.Manifest
 import android.graphics.BitmapFactory
@@ -54,7 +54,6 @@ import cl.duoc.activaciones.ui.components.vmFactory
 import cl.duoc.activaciones.ui.theme.barraColores
 import cl.duoc.activaciones.util.guardarFotoEvidencia
 import cl.duoc.activaciones.util.obtenerUbicacion
-import cl.duoc.activaciones.viewmodel.OportunidadViewModel
 import kotlinx.coroutines.launch
 
 /** Registrar (id <= 0) o modificar una oportunidad. Toda la lógica vive en OportunidadViewModel. */

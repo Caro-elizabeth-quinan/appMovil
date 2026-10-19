@@ -14,10 +14,10 @@ import cl.duoc.activaciones.ui.components.app
 import cl.duoc.activaciones.ui.components.vmFactory
 import cl.duoc.activaciones.ui.screen.AlertasScreen
 import cl.duoc.activaciones.ui.screen.DetalleScreen
-import cl.duoc.activaciones.ui.screen.ListaOportunidadesScreen
+import cl.duoc.activaciones.ui.oportunidad.ListaOportunidadesScreen
 import cl.duoc.activaciones.ui.screen.LoginScreen
 import cl.duoc.activaciones.ui.screen.MenuScreen
-import cl.duoc.activaciones.ui.screen.OportunidadFormScreen
+import cl.duoc.activaciones.ui.oportunidad.OportunidadFormScreen
 import cl.duoc.activaciones.ui.screen.OrganizacionDetalleScreen
 import cl.duoc.activaciones.ui.screen.OrganizacionesScreen
 import cl.duoc.activaciones.ui.screen.PerfilScreen

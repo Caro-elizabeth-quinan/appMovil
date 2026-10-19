@@ -1,4 +1,4 @@
-package cl.duoc.activaciones.ui.screen
+package cl.duoc.activaciones.ui.oportunidad
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +44,6 @@ import cl.duoc.activaciones.ui.components.Selector
 import cl.duoc.activaciones.ui.components.app
 import cl.duoc.activaciones.ui.components.vmFactory
 import cl.duoc.activaciones.ui.theme.barraColores
-import cl.duoc.activaciones.viewmodel.OportunidadViewModel
 
 @Composable
 fun ListaOportunidadesScreen(

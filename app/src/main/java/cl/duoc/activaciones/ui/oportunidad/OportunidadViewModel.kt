@@ -1,4 +1,4 @@
-package cl.duoc.activaciones.viewmodel
+package cl.duoc.activaciones.ui.oportunidad
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

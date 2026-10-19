@@ -47,6 +47,7 @@ import cl.duoc.activaciones.ui.components.Selector
 import cl.duoc.activaciones.ui.theme.barraColores
 import cl.duoc.activaciones.ui.components.app
 import cl.duoc.activaciones.ui.components.vmFactory
+import cl.duoc.activaciones.ui.oportunidad.FotoEvidencia
 import cl.duoc.activaciones.util.aFecha
 import cl.duoc.activaciones.util.aFechaHora
 
