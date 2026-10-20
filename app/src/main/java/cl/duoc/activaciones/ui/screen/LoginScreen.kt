@@ -61,7 +61,5 @@ fun LoginScreen(alEntrar: () -> Unit, alRegistrar: () -> Unit) {
         Spacer(Modifier.height(16.dp))
         Button(onClick = { vm.ingresar(correo, clave, alEntrar) }, modifier = Modifier.fillMaxWidth()) { Text("Ingresar") }
         TextButton(onClick = alRegistrar) { Text("Crear cuenta") }
-        Spacer(Modifier.height(16.dp))
-        Text("Demo: ejecutivo@demo.cl o supervisor@demo.cl · clave 1234", style = MaterialTheme.typography.bodySmall)
     }
 }
