@@ -38,7 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.activaciones.model.Contacto
 import cl.duoc.activaciones.model.Organizacion
+import cl.duoc.activaciones.model.AREAS_CONTACTO
+import cl.duoc.activaciones.model.ESTADOS_CONTACTO
+import cl.duoc.activaciones.model.MEDIOS_CONTACTO
 import cl.duoc.activaciones.model.REGIONES
+import cl.duoc.activaciones.model.TIPOS_ORGANIZACION
+import cl.duoc.activaciones.model.correoValido
+import cl.duoc.activaciones.util.aFecha
 import cl.duoc.activaciones.model.comunasDe
 import cl.duoc.activaciones.ui.components.Campo
 import cl.duoc.activaciones.ui.components.CampoSelector
@@ -110,13 +116,15 @@ fun OrganizacionesScreen(alVolver: () -> Unit, alAbrir: (Long) -> Unit) {
         var rubro by remember { mutableStateOf("") }
         var comuna by remember { mutableStateOf("") }
         var region by remember { mutableStateOf("") }
+        var sitioWeb by remember { mutableStateOf("") }
+        var observaciones by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { dialogo = false },
             title = { Text("Nueva organización") },
             text = {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
                     Campo("Nombre", nombre) { nombre = it }
-                    Campo("Tipo", tipo) { tipo = it }
+                    CampoSelector("Tipo de organización", TIPOS_ORGANIZACION, tipo.ifBlank { null }, { it }) { tipo = it }
                     Campo("Rubro", rubro) { rubro = it }
                     CampoSelector("Región", REGIONES, region.ifBlank { null }, { it }) {
                         region = it
@@ -126,16 +134,19 @@ fun OrganizacionesScreen(alVolver: () -> Unit, alAbrir: (Long) -> Unit) {
                         "Comuna", comunasDe(region), comuna.ifBlank { null }, { it },
                         habilitado = region.isNotBlank()
                     ) { comuna = it }
+                    Campo("Sitio web (ficticio o público)", sitioWeb) { sitioWeb = it }
+                    Campo("Observaciones", observaciones, unaLinea = false) { observaciones = it }
                 }
             },
             confirmButton = {
                 TextButton(
-                    enabled = nombre.isNotBlank() && region.isNotBlank() && comuna.isNotBlank(),
+                    enabled = nombre.isNotBlank() && tipo.isNotBlank() && region.isNotBlank() && comuna.isNotBlank(),
                     onClick = {
                         vm.crear(
                             Organizacion(
                                 nombre = nombre.trim(), tipo = tipo.trim(), rubro = rubro.trim(),
-                                comuna = comuna, region = region
+                                comuna = comuna, region = region,
+                                sitioWeb = sitioWeb.trim(), observaciones = observaciones.trim()
                             )
                         )
                         dialogo = false
@@ -174,6 +185,8 @@ fun OrganizacionDetalleScreen(id: Long, alVolver: () -> Unit, alAbrirOportunidad
                     Column(Modifier.padding(16.dp)) {
                         Text("${o.tipo} · ${o.rubro}")
                         Text("${o.comuna}, ${o.region}")
+                        if (o.sitioWeb.isNotBlank()) Text("Sitio web: ${o.sitioWeb}", style = MaterialTheme.typography.bodySmall)
+                        if (o.observaciones.isNotBlank()) Text("Obs.: ${o.observaciones}", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
@@ -184,6 +197,12 @@ fun OrganizacionDetalleScreen(id: Long, alVolver: () -> Unit, alAbrirOportunidad
                         Text(c.nombre, fontWeight = FontWeight.SemiBold)
                         Text("${c.cargo} · ${c.area}")
                         Text("${c.correo} · ${c.telefono}", style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            "Prefiere: ${c.medioPreferente} · ${c.estado}" +
+                                (c.fechaUltimoContacto?.let { " · Último contacto: ${it.aFecha()}" } ?: ""),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        if (c.observaciones.isNotBlank()) Text(c.observaciones, style = MaterialTheme.typography.bodySmall)
                     }
                     IconButton(onClick = { contactoPorEliminar = c }) {
                         Icon(Icons.Default.Delete, contentDescription = "Eliminar contacto", tint = MaterialTheme.colorScheme.error)
@@ -213,6 +232,10 @@ fun OrganizacionDetalleScreen(id: Long, alVolver: () -> Unit, alAbrirOportunidad
         var area by remember { mutableStateOf("") }
         var correo by remember { mutableStateOf("") }
         var telefono by remember { mutableStateOf("") }
+        var medio by remember { mutableStateOf(MEDIOS_CONTACTO.first()) }
+        var estadoContacto by remember { mutableStateOf(ESTADOS_CONTACTO.first()) }
+        var observaciones by remember { mutableStateOf("") }
+        val errorCorreo = if (correo.isNotBlank() && !correoValido(correo)) "Correo inválido" else null
         AlertDialog(
             onDismissRequest = { dialogo = false },
             title = { Text("Nuevo contacto") },
@@ -220,14 +243,25 @@ fun OrganizacionDetalleScreen(id: Long, alVolver: () -> Unit, alAbrirOportunidad
                 Column(Modifier.verticalScroll(rememberScrollState())) {
                     Campo("Nombre", nombre) { nombre = it }
                     Campo("Cargo", cargo) { cargo = it }
-                    Campo("Área", area) { area = it }
-                    Campo("Correo", correo) { correo = it }
-                    Campo("Teléfono", telefono) { telefono = it }
+                    CampoSelector("Área", AREAS_CONTACTO, area.ifBlank { null }, { it }) { area = it }
+                    Campo("Correo (ficticio)", correo, error = errorCorreo) { correo = it }
+                    Campo("Teléfono (ficticio)", telefono) { telefono = it }
+                    CampoSelector("Medio de contacto preferente", MEDIOS_CONTACTO, medio, { it }) { medio = it }
+                    CampoSelector("Estado del contacto", ESTADOS_CONTACTO, estadoContacto, { it }) { estadoContacto = it }
+                    Campo("Observaciones", observaciones, unaLinea = false) { observaciones = it }
                 }
             },
             confirmButton = {
-                TextButton(enabled = nombre.isNotBlank(), onClick = {
-                    vm.agregarContacto(Contacto(organizacionId = 0, nombre = nombre.trim(), cargo = cargo.trim(), area = area.trim(), correo = correo.trim(), telefono = telefono.trim()))
+                TextButton(enabled = nombre.isNotBlank() && area.isNotBlank() && errorCorreo == null, onClick = {
+                    vm.agregarContacto(
+                        Contacto(
+                            organizacionId = 0, nombre = nombre.trim(), cargo = cargo.trim(), area = area,
+                            correo = correo.trim(), telefono = telefono.trim(), medioPreferente = medio,
+                            estado = estadoContacto,
+                            fechaUltimoContacto = if (estadoContacto == ESTADOS_CONTACTO.first()) null else System.currentTimeMillis(),
+                            observaciones = observaciones.trim()
+                        )
+                    )
                     dialogo = false
                 }) { Text("Guardar") }
             },

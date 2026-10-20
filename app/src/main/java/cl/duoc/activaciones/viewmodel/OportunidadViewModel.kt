@@ -8,6 +8,7 @@ import cl.duoc.activaciones.data.repository.Repositorio
 import cl.duoc.activaciones.model.EstadoOportunidad
 import cl.duoc.activaciones.model.Filtro
 import cl.duoc.activaciones.model.Organizacion
+import cl.duoc.activaciones.model.Perfil
 import cl.duoc.activaciones.model.Potencial
 import cl.duoc.activaciones.model.Prioridad
 import cl.duoc.activaciones.model.TipoEvento
@@ -45,6 +46,7 @@ data class OportunidadUiState(
     val estado: EstadoOportunidad = EstadoOportunidad.EVENTO_IDENTIFICADO,
     val observaciones: String = "",
     val organizacionId: Long? = null,
+    val responsableId: Long? = null, // solo el supervisor puede reasignarlo
     // Evento (opcional)
     val fechaInicio: String = "",
     val fechaTermino: String = "",
@@ -149,6 +151,7 @@ class OportunidadViewModel(
                 nombre = o.nombre, tipo = o.tipo, descripcion = o.descripcion, fuente = o.fuente,
                 prioridad = o.prioridad, potencial = o.potencial, estado = o.estado,
                 observaciones = o.observaciones, organizacionId = o.organizacionId,
+                responsableId = o.responsableId,
                 fechaInicio = o.fechaInicio?.aFecha() ?: "", fechaTermino = o.fechaTermino?.aFecha() ?: "",
                 horario = o.horario, comuna = o.comuna, region = o.region,
                 publico = if (o.publicoEsperado > 0) o.publicoEsperado.toString() else "",
@@ -170,6 +173,7 @@ class OportunidadViewModel(
     fun onEstado(v: EstadoOportunidad) = _uiState.update { it.copy(estado = v) }
     fun onObservaciones(v: String) = _uiState.update { it.copy(observaciones = v) }
     fun onOrganizacion(v: Long?) = _uiState.update { it.copy(organizacionId = v) }
+    fun onResponsable(v: Long) = _uiState.update { it.copy(responsableId = v) }
     fun onFechaInicio(v: String) = _uiState.update { it.copy(fechaInicio = v, fechaError = null) }
     fun onFechaTermino(v: String) = _uiState.update { it.copy(fechaTermino = v, fechaError = null) }
     fun onHorario(v: String) = _uiState.update { it.copy(horario = v) }
@@ -242,6 +246,13 @@ class OportunidadViewModel(
         viewModelScope.launch {
             val ahora = System.currentTimeMillis()
             val base = original
+            // Asignar responsable: solo el supervisor; el ejecutivo conserva el actual o queda él mismo
+            val esSupervisor = repo.usuarioUnaVez(usuarioId)?.perfil == Perfil.SUPERVISOR
+            val responsable = if (esSupervisor) {
+                s.responsableId ?: base?.responsableId ?: usuarioId
+            } else {
+                base?.responsableId ?: usuarioId
+            }
             val entidad = OportunidadEntity(
                 id = base?.id ?: 0,
                 nombre = s.nombre.trim(),
@@ -255,7 +266,7 @@ class OportunidadViewModel(
                 fechaCambioEstado = if (base == null || base.estado != s.estado) ahora else base.fechaCambioEstado,
                 observaciones = s.observaciones.trim(),
                 organizacionId = s.organizacionId,
-                responsableId = base?.responsableId ?: usuarioId,
+                responsableId = responsable,
                 fechaInicio = inicio,
                 fechaTermino = termino,
                 horario = s.horario.trim(),

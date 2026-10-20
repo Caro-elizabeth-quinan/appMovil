@@ -29,13 +29,13 @@ import cl.duoc.activaciones.ui.components.app
 import cl.duoc.activaciones.ui.components.vmFactory
 import cl.duoc.activaciones.ui.theme.barraColores
 import cl.duoc.activaciones.util.AlertasWorker
-import cl.duoc.activaciones.viewmodel.UsuarioViewModel
+import cl.duoc.activaciones.viewmodel.PrincipalViewModel
 
 @Composable
 fun PerfilScreen(alVolver: () -> Unit, alSalir: () -> Unit) {
     val app = app()
-    val vm: UsuarioViewModel = viewModel(
-        factory = vmFactory { UsuarioViewModel(app.repo, app.oportunidadRepo, app.sesion) }
+    val vm: PrincipalViewModel = viewModel(
+        factory = vmFactory { PrincipalViewModel(app.repo, app.oportunidadRepo, app.sesion) }
     )
     val usuario by vm.usuario.collectAsState()
 

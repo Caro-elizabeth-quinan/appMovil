@@ -17,11 +17,12 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 
+/** Sesión, perfil y alertas del usuario conectado (Menú, Perfil y Alertas). */
 @OptIn(ExperimentalCoroutinesApi::class)
 class PrincipalViewModel(
     repo: Repositorio,
     oportunidadRepo: OportunidadRepository,
-    sesion: Sesion
+    private val sesion: Sesion
 ) : ViewModel() {
 
     val usuario: StateFlow<Usuario?> = sesion.usuarioId
@@ -35,4 +36,8 @@ class PrincipalViewModel(
     ) { ops, segs, u ->
         calcularAlertas(visibles(ops, u), segs, System.currentTimeMillis())
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Alertas())
+
+    fun cerrarSesion() {
+        sesion.cerrar()
+    }
 }

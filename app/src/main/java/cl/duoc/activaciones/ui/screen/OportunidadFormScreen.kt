@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.activaciones.model.EstadoOportunidad
+import cl.duoc.activaciones.model.Perfil
 import cl.duoc.activaciones.model.Potencial
 import cl.duoc.activaciones.model.Prioridad
 import cl.duoc.activaciones.model.REGIONES
@@ -74,6 +75,8 @@ fun OportunidadFormScreen(
     )
     val estado by vm.uiState.collectAsState()
     val organizaciones by vm.organizaciones.collectAsState()
+    val usuario by vm.usuario.collectAsState()
+    val usuarios by vm.usuarios.collectAsState()
 
     LaunchedEffect(id) { vm.cargar(id) }
     LaunchedEffect(estado.guardadoExitosamente) {
@@ -148,6 +151,15 @@ fun OportunidadFormScreen(
                 { sel -> organizaciones.firstOrNull { it.id == sel }?.nombre ?: "Sin organización" },
                 onSeleccion = vm::onOrganizacion
             )
+            // Asignar responsable interno (solo supervisor)
+            if (usuario?.perfil == Perfil.SUPERVISOR) {
+                val ejecutivos = usuarios.filter { it.perfil == Perfil.EJECUTIVO }
+                CampoSelector(
+                    "Responsable interno", ejecutivos.map { it.id }, estado.responsableId,
+                    { sel -> usuarios.firstOrNull { it.id == sel }?.nombre ?: "Sin asignar" },
+                    onSeleccion = vm::onResponsable
+                )
+            }
 
             Titulo("Evento asociado (opcional)")
             Campo("Fecha inicio (dd/MM/aaaa)", estado.fechaInicio, error = estado.fechaError, onCambio = vm::onFechaInicio)

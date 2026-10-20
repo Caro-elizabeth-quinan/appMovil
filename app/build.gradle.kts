@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") // Kotlin 2.x: compilador de Compose como plugin
     id("com.google.devtools.ksp")
 }
 
@@ -33,12 +34,11 @@ android {
         )
     }
     buildFeatures { compose = true }
-    composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
 }
 
 dependencies {
     // CameraX
-    val camerax = "1.3.4"
+    val camerax = "1.4.1" // 1.4.x: librerías nativas alineadas a 16 KB
     implementation("androidx.camera:camera-core:$camerax")
     implementation("androidx.camera:camera-camera2:$camerax")
     implementation("androidx.camera:camera-lifecycle:$camerax")

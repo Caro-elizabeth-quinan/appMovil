@@ -3,7 +3,7 @@ package cl.duoc.activaciones
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import cl.duoc.activaciones.ui.navigation.AppNavigation
+import cl.duoc.activaciones.navigation.AppNavigation
 import cl.duoc.activaciones.ui.theme.ActivacionesTheme
 
 class MainActivity : ComponentActivity() {

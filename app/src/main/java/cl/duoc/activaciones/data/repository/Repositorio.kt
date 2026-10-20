@@ -70,16 +70,16 @@ class Repositorio(private val db: AppDatabase) {
             val eje2 = usuarios.insertar(Usuario(nombre = "Diego Fuentes", correo = "ejecutivo2@demo.cl", clave = claveDemo, perfil = Perfil.EJECUTIVO, zona = "Valparaíso"))
             usuarios.insertar(Usuario(nombre = "Marcela Soto", correo = "supervisor@demo.cl", clave = claveDemo, perfil = Perfil.SUPERVISOR, zona = "Nacional"))
 
-            val o1 = organizaciones.insertar(Organizacion(nombre = "Minera Andes Ficticia S.A.", tipo = "Empresa privada", rubro = "Minería", comuna = "Las Condes", region = "Metropolitana"))
-            val o2 = organizaciones.insertar(Organizacion(nombre = "Municipalidad de Ejemplo", tipo = "Institución pública", rubro = "Gobierno local", comuna = "Peñalolén", region = "Metropolitana"))
-            val o3 = organizaciones.insertar(Organizacion(nombre = "Retail Pacífico Demo Ltda.", tipo = "Empresa privada", rubro = "Retail", comuna = "Viña del Mar", region = "Valparaíso"))
-            val o4 = organizaciones.insertar(Organizacion(nombre = "Instituto Técnico Prueba", tipo = "Institución educacional", rubro = "Educación", comuna = "Concepción", region = "Biobío"))
+            val o1 = organizaciones.insertar(Organizacion(nombre = "Minera Andes Ficticia S.A.", tipo = "Empresa", rubro = "Minería", comuna = "Las Condes", region = "Metropolitana"))
+            val o2 = organizaciones.insertar(Organizacion(nombre = "Municipalidad de Ejemplo", tipo = "Municipalidad", rubro = "Gobierno local", comuna = "Peñalolén", region = "Metropolitana"))
+            val o3 = organizaciones.insertar(Organizacion(nombre = "Retail Pacífico Demo Ltda.", tipo = "Empresa", rubro = "Retail", comuna = "Viña del Mar", region = "Valparaíso"))
+            val o4 = organizaciones.insertar(Organizacion(nombre = "Instituto Técnico Prueba", tipo = "Institución privada", rubro = "Educación", comuna = "Concepción", region = "Biobío"))
 
-            organizaciones.insertarContacto(Contacto(organizacionId = o1, nombre = "Paula Herrera", cargo = "Jefa de RR.HH.", area = "Personas", correo = "paula.herrera@ficticia.example", telefono = "+56 9 0000 0001"))
-            organizaciones.insertarContacto(Contacto(organizacionId = o1, nombre = "Tomás Vidal", cargo = "Analista de bienestar", area = "Personas", correo = "tomas.vidal@ficticia.example", telefono = "+56 9 0000 0002"))
-            organizaciones.insertarContacto(Contacto(organizacionId = o2, nombre = "Ana Muñoz", cargo = "Encargada de eventos", area = "DIDECO", correo = "ana.munoz@muni.example", telefono = "+56 9 0000 0003"))
-            organizaciones.insertarContacto(Contacto(organizacionId = o3, nombre = "Jorge Pizarro", cargo = "Gerente de tienda", area = "Operaciones", correo = "jorge.pizarro@retail.example", telefono = "+56 9 0000 0004"))
-            organizaciones.insertarContacto(Contacto(organizacionId = o4, nombre = "Lorena Castro", cargo = "Coordinadora de vinculación", area = "Vinculación con el medio", correo = "lorena.castro@instituto.example", telefono = "+56 9 0000 0005"))
+            organizaciones.insertarContacto(Contacto(organizacionId = o1, nombre = "Paula Herrera", cargo = "Jefa de RR.HH.", area = "Recursos Humanos", correo = "paula.herrera@ficticia.example", telefono = "+56 9 0000 0001"))
+            organizaciones.insertarContacto(Contacto(organizacionId = o1, nombre = "Tomás Vidal", cargo = "Analista de bienestar", area = "Bienestar", correo = "tomas.vidal@ficticia.example", telefono = "+56 9 0000 0002"))
+            organizaciones.insertarContacto(Contacto(organizacionId = o2, nombre = "Ana Muñoz", cargo = "Encargada de eventos", area = "Eventos", correo = "ana.munoz@muni.example", telefono = "+56 9 0000 0003"))
+            organizaciones.insertarContacto(Contacto(organizacionId = o3, nombre = "Jorge Pizarro", cargo = "Gerente de tienda", area = "Administración", correo = "jorge.pizarro@retail.example", telefono = "+56 9 0000 0004"))
+            organizaciones.insertarContacto(Contacto(organizacionId = o4, nombre = "Lorena Castro", cargo = "Coordinadora de vinculación", area = "Activaciones", correo = "lorena.castro@instituto.example", telefono = "+56 9 0000 0005"))
 
             fun op(nombre: String, tipo: TipoEvento, fuente: String, pri: Prioridad, pot: Potencial, estado: EstadoOportunidad,
                    diasEstado: Int, org: Long, resp: Long, enDias: Int, comuna: String, region: String, publico: Int, costo: Int) =
@@ -92,19 +92,19 @@ class Repositorio(private val db: AppDatabase) {
                     condiciones = "Stand 3x3, requiere acreditación previa", costo = costo
                 )
 
-            val a = oportunidades.insertar(op("Feria de beneficios Minera Andes", TipoEvento.FERIA, "Referido", Prioridad.ALTA, Potencial.ALTO, EstadoOportunidad.PROPUESTA_ENVIADA, 10, o1, eje, 5, "Las Condes", "Metropolitana", 800, 350000))
-            val b = oportunidades.insertar(op("Feria laboral comunal", TipoEvento.FERIA_LABORAL, "Redes sociales", Prioridad.MEDIA, Potencial.MEDIO, EstadoOportunidad.EVENTO_IDENTIFICADO, 3, o2, eje, 25, "Peñalolén", "Metropolitana", 1500, 0))
-            val c = oportunidades.insertar(op("Activación en tienda Viña", TipoEvento.ACTIVACION, "Visita en terreno", Prioridad.ALTA, Potencial.ALTO, EstadoOportunidad.CONTACTO_REALIZADO, 4, o3, eje2, 10, "Viña del Mar", "Valparaíso", 400, 120000))
-            val d = oportunidades.insertar(op("Seminario de empleabilidad", TipoEvento.SEMINARIO, "Sitio web", Prioridad.BAJA, Potencial.BAJO, EstadoOportunidad.PARTICIPACION_CONFIRMADA, 2, o4, eje2, 18, "Concepción", "Biobío", 250, 80000))
-            val e = oportunidades.insertar(op("Charla de bienestar financiero", TipoEvento.CHARLA, "Llamada entrante", Prioridad.MEDIA, Potencial.MEDIO, EstadoOportunidad.EN_ESPERA_RESPUESTA, 9, o1, eje, 40, "Las Condes", "Metropolitana", 120, 0))
-            oportunidades.insertar(op("Feria navideña municipal", TipoEvento.FERIA, "Prensa local", Prioridad.BAJA, Potencial.BAJO, EstadoOportunidad.DESCARTADA, 6, o2, eje, 60, "Peñalolén", "Metropolitana", 2000, 500000))
+            val a = oportunidades.insertar(op("Feria de beneficios Minera Andes", TipoEvento.FERIA_EMPRESARIAL, "Referido", Prioridad.ALTA, Potencial.ALTO, EstadoOportunidad.PROPUESTA_ENVIADA, 10, o1, eje, 5, "Las Condes", "Metropolitana", 800, 350000))
+            val b = oportunidades.insertar(op("Feria laboral comunal", TipoEvento.ACTIVIDAD_MUNICIPAL, "Redes sociales", Prioridad.MEDIA, Potencial.MEDIO, EstadoOportunidad.EVENTO_IDENTIFICADO, 3, o2, eje, 25, "Peñalolén", "Metropolitana", 1500, 0))
+            val c = oportunidades.insertar(op("Activación en tienda Viña", TipoEvento.ACTIVACION_COMERCIAL, "Visita en terreno", Prioridad.ALTA, Potencial.ALTO, EstadoOportunidad.CONTACTO_REALIZADO, 4, o3, eje2, 10, "Viña del Mar", "Valparaíso", 400, 120000))
+            val d = oportunidades.insertar(op("Seminario de empleabilidad", TipoEvento.FERIA_INSTITUCIONAL, "Sitio web", Prioridad.BAJA, Potencial.BAJO, EstadoOportunidad.PARTICIPACION_CONFIRMADA, 2, o4, eje2, 18, "Concepción", "Biobío", 250, 80000))
+            val e = oportunidades.insertar(op("Charla de bienestar financiero", TipoEvento.JORNADA_BENEFICIOS, "Llamada entrante", Prioridad.MEDIA, Potencial.MEDIO, EstadoOportunidad.EN_ESPERA_RESPUESTA, 9, o1, eje, 40, "Las Condes", "Metropolitana", 120, 0))
+            oportunidades.insertar(op("Feria navideña municipal", TipoEvento.ACTIVIDAD_MUNICIPAL, "Prensa local", Prioridad.BAJA, Potencial.BAJO, EstadoOportunidad.DESCARTADA, 6, o2, eje, 60, "Peñalolén", "Metropolitana", 2000, 500000))
 
             seguimientos.insertar(Seguimiento(oportunidadId = a, tipoAccion = TipoAccion.REUNION, fechaHora = hoy - 12 * DIA_MS, resultado = "Reunión con RR.HH., piden propuesta formal", proximaAccion = "Enviar propuesta", fechaProximoSeguimiento = hoy - 10 * DIA_MS))
-            seguimientos.insertar(Seguimiento(oportunidadId = a, tipoAccion = TipoAccion.CORREO, fechaHora = hoy - 10 * DIA_MS, resultado = "Propuesta enviada por correo", proximaAccion = "Llamar para confirmar recepción", fechaProximoSeguimiento = hoy - 3 * DIA_MS))
+            seguimientos.insertar(Seguimiento(oportunidadId = a, tipoAccion = TipoAccion.ENVIO_PROPUESTA, fechaHora = hoy - 10 * DIA_MS, resultado = "Propuesta enviada por correo", proximaAccion = "Llamar para confirmar recepción", fechaProximoSeguimiento = hoy - 3 * DIA_MS))
             seguimientos.insertar(Seguimiento(oportunidadId = b, tipoAccion = TipoAccion.CAMBIO_ESTADO, fechaHora = hoy - 3 * DIA_MS, resultado = "Oportunidad registrada (Evento identificado)"))
             seguimientos.insertar(Seguimiento(oportunidadId = c, tipoAccion = TipoAccion.LLAMADA, fechaHora = hoy - 4 * DIA_MS, resultado = "Gerente interesado, solicita detalles", proximaAccion = "Visitar tienda", fechaProximoSeguimiento = hoy + 2 * DIA_MS))
-            seguimientos.insertar(Seguimiento(oportunidadId = d, tipoAccion = TipoAccion.CORREO, fechaHora = hoy - 2 * DIA_MS, resultado = "Confirman cupo y stand"))
-            seguimientos.insertar(Seguimiento(oportunidadId = e, tipoAccion = TipoAccion.CORREO, fechaHora = hoy - 9 * DIA_MS, resultado = "Se envía temario de la charla", proximaAccion = "Esperar respuesta", fechaProximoSeguimiento = hoy + 1 * DIA_MS))
+            seguimientos.insertar(Seguimiento(oportunidadId = d, tipoAccion = TipoAccion.CONFIRMACION, fechaHora = hoy - 2 * DIA_MS, resultado = "Confirman cupo y stand"))
+            seguimientos.insertar(Seguimiento(oportunidadId = e, tipoAccion = TipoAccion.ENVIO_PRESENTACION, fechaHora = hoy - 9 * DIA_MS, resultado = "Se envía temario de la charla", proximaAccion = "Esperar respuesta", fechaProximoSeguimiento = hoy + 1 * DIA_MS))
         }
     }
 

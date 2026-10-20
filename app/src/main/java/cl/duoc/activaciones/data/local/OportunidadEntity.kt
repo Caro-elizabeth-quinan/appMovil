@@ -7,7 +7,6 @@ import cl.duoc.activaciones.model.EstadoOportunidad
 import cl.duoc.activaciones.model.Potencial
 import cl.duoc.activaciones.model.Prioridad
 import cl.duoc.activaciones.model.TipoEvento
-import cl.duoc.activaciones.data.local.OportunidadEntity
 /**
  * Oportunidad comercial. Los datos del evento asociado (relación 1:1) van en la misma tabla
  * y son opcionales en esta etapa.

@@ -1,4 +1,4 @@
-package cl.duoc.activaciones.ui.navigation
+package cl.duoc.activaciones.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -53,7 +53,7 @@ fun AppNavigation() {
 
     // ViewModel compartido entre Registro y Resumen (Guía 11)
     val usuarioViewModel: UsuarioViewModel =
-        viewModel(factory = vmFactory { UsuarioViewModel(app.repo, app.oportunidadRepo, app.sesion) })
+        viewModel(factory = vmFactory { UsuarioViewModel(app.repo) })
 
     val inicio = remember { if (app.sesion.usuarioId.value != null) Rutas.MENU else Rutas.LOGIN }
     val idArg = listOf(navArgument("id") { type = NavType.LongType })

@@ -11,6 +11,7 @@ import cl.duoc.activaciones.model.TipoEvento
 import cl.duoc.activaciones.model.Usuario
 import cl.duoc.activaciones.model.DIA_MS
 import cl.duoc.activaciones.model.Filtro
+import cl.duoc.activaciones.model.PeriodoFecha
 import cl.duoc.activaciones.model.calcularAlertas
 import cl.duoc.activaciones.model.filtrar
 import cl.duoc.activaciones.model.visibles
@@ -25,7 +26,7 @@ class LogicaTest {
         id: Long, estado: EstadoOportunidad, enDias: Int = 30, diasEstado: Int = 0,
         responsable: Long = 1, region: String = "Metropolitana", prioridad: Prioridad = Prioridad.MEDIA
     ) = OportunidadEntity(
-        id = id, nombre = "Op $id", tipo = TipoEvento.FERIA, descripcion = "desc", fuente = "web", fechaDeteccion = ahora,
+        id = id, nombre = "Op $id", tipo = TipoEvento.FERIA_EMPRESARIAL, descripcion = "desc", fuente = "web", fechaDeteccion = ahora,
         prioridad = prioridad, potencial = Potencial.MEDIO, estado = estado, fechaCambioEstado = ahora - diasEstado * DIA_MS, organizacionId = 1,
         responsableId = responsable, fechaInicio = ahora + enDias * DIA_MS, fechaTermino = ahora + enDias * DIA_MS,
         horario = "", comuna = "Peñalolén", region = region, publicoEsperado = 0, condiciones = "", costo = 0
@@ -88,5 +89,28 @@ class LogicaTest {
         assertEquals(1, visibles(ops, ejecutivo).size)
         assertEquals(2, visibles(ops, supervisor).size)
         assertTrue(visibles(ops, null).isEmpty())
+    }
+
+    @Test
+    fun `filtro por fecha separa proximos, pasados y sin fecha`() {
+        val ops = listOf(
+            op(1, EstadoOportunidad.EVENTO_IDENTIFICADO, enDias = 3),
+            op(2, EstadoOportunidad.EVENTO_IDENTIFICADO, enDias = 20),
+            op(3, EstadoOportunidad.EVENTO_IDENTIFICADO, enDias = -5),
+            op(4, EstadoOportunidad.EVENTO_IDENTIFICADO).copy(fechaInicio = null)
+        )
+        assertEquals(listOf(1L), filtrar(ops, Filtro(periodo = PeriodoFecha.PROXIMOS_7), ahora).map { it.id })
+        assertEquals(listOf(1L, 2L), filtrar(ops, Filtro(periodo = PeriodoFecha.PROXIMOS_30), ahora).map { it.id })
+        assertEquals(listOf(3L), filtrar(ops, Filtro(periodo = PeriodoFecha.PASADOS), ahora).map { it.id })
+        assertEquals(listOf(4L), filtrar(ops, Filtro(periodo = PeriodoFecha.SIN_FECHA), ahora).map { it.id })
+    }
+
+    @Test
+    fun `filtro por organizacion`() {
+        val ops = listOf(
+            op(1, EstadoOportunidad.EVENTO_IDENTIFICADO),
+            op(2, EstadoOportunidad.EVENTO_IDENTIFICADO).copy(organizacionId = 2)
+        )
+        assertEquals(listOf(2L), filtrar(ops, Filtro(organizacionId = 2), ahora).map { it.id })
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import cl.duoc.activaciones.util.aFechaHora
 import cl.duoc.activaciones.viewmodel.UsuarioViewModel
 
+/** Observa el mismo UsuarioViewModel que RegistroScreen (ViewModel compartido, Guía 11). */
 @Composable
 fun ResumenScreen(viewModel: UsuarioViewModel, alIrALogin: () -> Unit) {
     val usuario by viewModel.ultimoRegistro.collectAsState()
@@ -32,6 +33,8 @@ fun ResumenScreen(viewModel: UsuarioViewModel, alIrALogin: () -> Unit) {
                     Text("Nombre: ${u.nombre}")
                     Text("Correo: ${u.correo}")
                     Text("Dirección: ${u.direccion}")
+                    Text("Contraseña: ${"*".repeat(u.clave.length)}")
+                    Text("Términos: Aceptados") // el registro exige aceptarlos
                     Text("Perfil: ${u.perfil.name.lowercase().replaceFirstChar { it.uppercase() }}")
                     Text("Área: ${u.area}")
                     Text("Zona: ${u.zona}")

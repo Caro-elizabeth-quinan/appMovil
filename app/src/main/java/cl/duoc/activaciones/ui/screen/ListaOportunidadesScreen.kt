@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.activaciones.model.EstadoOportunidad
 import cl.duoc.activaciones.model.Filtro
+import cl.duoc.activaciones.model.PeriodoFecha
 import cl.duoc.activaciones.data.local.OportunidadEntity
 import cl.duoc.activaciones.model.Perfil
 import cl.duoc.activaciones.model.Prioridad
@@ -61,6 +62,7 @@ fun ListaOportunidadesScreen(
     val filtro by vm.filtro.collectAsState()
     val usuario by vm.usuario.collectAsState()
     val usuarios by vm.usuarios.collectAsState()
+    val organizaciones by vm.organizaciones.collectAsState()
     var porEliminar by remember { mutableStateOf<OportunidadEntity?>(null) }
 
     Scaffold(
@@ -105,6 +107,13 @@ fun ListaOportunidadesScreen(
                 Selector("Región", listOf<String?>(null) + REGIONES, filtro.region, { it ?: "Todas" }) {
                     vm.actualizarFiltro(filtro.copy(region = it))
                 }
+                Selector("Fecha", PeriodoFecha.values().toList(), filtro.periodo, { it.etiqueta }) {
+                    vm.actualizarFiltro(filtro.copy(periodo = it))
+                }
+                Selector(
+                    "Organización", listOf<Long?>(null) + organizaciones.map { it.id }, filtro.organizacionId,
+                    { id -> organizaciones.firstOrNull { it.id == id }?.nombre ?: "Todas" }
+                ) { vm.actualizarFiltro(filtro.copy(organizacionId = it)) }
                 if (usuario?.perfil == Perfil.SUPERVISOR) {
                     val ejecutivos = usuarios.filter { it.perfil == Perfil.EJECUTIVO }
                     Selector(

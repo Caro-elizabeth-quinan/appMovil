@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.activaciones.data.local.OportunidadEntity
 
-import cl.duoc.activaciones.viewmodel.UsuarioViewModel
+import cl.duoc.activaciones.viewmodel.PrincipalViewModel
 import cl.duoc.activaciones.ui.components.OportunidadCard
 import cl.duoc.activaciones.ui.theme.barraColores
 import cl.duoc.activaciones.ui.components.app
@@ -30,7 +30,7 @@ import cl.duoc.activaciones.ui.components.vmFactory
 @Composable
 fun AlertasScreen(alVolver: () -> Unit, alAbrir: (Long) -> Unit) {
     val app = app()
-    val vm: UsuarioViewModel = viewModel(factory = vmFactory { UsuarioViewModel(app.repo, app.oportunidadRepo, app.sesion) })
+    val vm: PrincipalViewModel = viewModel(factory = vmFactory { PrincipalViewModel(app.repo, app.oportunidadRepo, app.sesion) })
     val alertas by vm.alertas.collectAsState()
 
     Scaffold(
