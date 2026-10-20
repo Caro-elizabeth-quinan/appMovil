@@ -1,5 +1,9 @@
 package cl.duoc.activaciones.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +49,9 @@ object Rutas {
     fun organizacion(id: Long) = "organizacion/$id"
 }
 
+/** Duración de las transiciones entre pantallas (ms). */
+private const val DURACION = 300
+
 /** Flujo: Login → Menú → ListaOportunidades → OportunidadForm (y demás módulos). */
 @Composable
 fun AppNavigation() {
@@ -58,7 +65,22 @@ fun AppNavigation() {
     val inicio = remember { if (app.sesion.usuarioId.value != null) Rutas.MENU else Rutas.LOGIN }
     val idArg = listOf(navArgument("id") { type = NavType.LongType })
 
-    NavHost(nav, startDestination = inicio) {
+    NavHost(
+        nav, startDestination = inicio,
+        // Transiciones animadas: al avanzar la pantalla entra desde la derecha; al volver, desde la izquierda
+        enterTransition = {
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(DURACION)) + fadeIn(tween(DURACION))
+        },
+        exitTransition = {
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(DURACION)) + fadeOut(tween(DURACION))
+        },
+        popEnterTransition = {
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(DURACION)) + fadeIn(tween(DURACION))
+        },
+        popExitTransition = {
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(DURACION)) + fadeOut(tween(DURACION))
+        }
+    ) {
         composable(Rutas.LOGIN) {
             LoginScreen(
                 alEntrar = { nav.navigate(Rutas.MENU) { popUpTo(nav.graph.id) { inclusive = true } } },

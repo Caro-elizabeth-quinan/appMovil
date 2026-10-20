@@ -38,8 +38,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import cl.duoc.activaciones.model.AREAS_USUARIO
 import cl.duoc.activaciones.model.ZONAS_USUARIO
+import cl.duoc.activaciones.ui.components.AvisoError
 import cl.duoc.activaciones.ui.components.Campo
 import cl.duoc.activaciones.ui.components.CampoSelector
+import cl.duoc.activaciones.ui.components.IconoError
 import cl.duoc.activaciones.ui.theme.barraColores
 import cl.duoc.activaciones.viewmodel.UsuarioViewModel
 
@@ -87,6 +89,9 @@ fun RegistroScreen(
                 supportingText = if (errorCorreo != null) {
                     { Text(errorCorreo) }
                 } else null,
+                trailingIcon = if (errorCorreo != null) {
+                    { IconoError() }
+                } else null,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
             )
@@ -116,12 +121,13 @@ fun RegistroScreen(
                 Text("Acepto los términos y condiciones")
             }
             e.terminos?.let {
-                Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconoError()
+                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
             }
 
-            if (e.hayErrores) {
-                Text("Revisa los campos marcados en rojo.", color = MaterialTheme.colorScheme.error)
-            }
+            AvisoError(e.hayErrores, "Revisa los campos marcados en rojo.")
 
             // Si el formulario es válido, registra y navega a "resumen"
             Button(
@@ -156,7 +162,12 @@ private fun CampoClave(etiqueta: String, valor: String, error: String?, onCambio
         } else null,
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        trailingIcon = { TextButton(onClick = { visible = !visible }) { Text(if (visible) "Ocultar" else "Ver") } },
+        trailingIcon = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (error != null) IconoError()
+                TextButton(onClick = { visible = !visible }) { Text(if (visible) "Ocultar" else "Ver") }
+            }
+        },
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
     )
 }

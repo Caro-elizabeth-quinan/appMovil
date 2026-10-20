@@ -1,5 +1,12 @@
 package cl.duoc.activaciones.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -75,7 +83,7 @@ fun <T> Selector(
     }
 }
 
-/** Campo de texto con error visible (isError + supportingText) controlado desde el ViewModel. */
+/** Campo de texto con error visible (isError + supportingText + ícono) controlado desde el ViewModel. */
 @Composable
 fun Campo(
     etiqueta: String,
@@ -94,6 +102,9 @@ fun Campo(
         isError = error != null,
         supportingText = if (error != null) {
             { Text(error) }
+        } else null,
+        trailingIcon = if (error != null) {
+            { IconoError() }
         } else null,
         keyboardOptions = KeyboardOptions(keyboardType = if (numerico) KeyboardType.Number else KeyboardType.Text),
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
@@ -123,7 +134,12 @@ fun <T> CampoSelector(
             supportingText = if (error != null) {
                 { Text(error) }
             } else null,
-            trailingIcon = { Icon(Icons.Default.ArrowDropDown, contentDescription = null) },
+            trailingIcon = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (error != null) IconoError()
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
         if (habilitado) Box(Modifier.matchParentSize().clickable { abierto = true })
@@ -134,6 +150,27 @@ fun <T> CampoSelector(
                     onClick = { onSeleccion(opcion); abierto = false }
                 )
             }
+        }
+    }
+}
+
+/** Ícono de advertencia que acompaña a un campo con error. */
+@Composable
+fun IconoError() {
+    Icon(Icons.Default.Warning, contentDescription = "Campo con error", tint = MaterialTheme.colorScheme.error)
+}
+
+/** Aviso general de error con ícono; aparece y desaparece con animación (fade + expand). */
+@Composable
+fun AvisoError(visible: Boolean, texto: String) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(tween(250)) + expandVertically(tween(250)),
+        exit = fadeOut(tween(200)) + shrinkVertically(tween(200))
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
+            IconoError()
+            Text(texto, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(start = 6.dp))
         }
     }
 }
@@ -170,7 +207,9 @@ fun colorEstado(estado: EstadoOportunidad): Color = when (estado) {
 
 @Composable
 fun EstadoChip(estado: EstadoOportunidad) {
-    Surface(color = colorEstado(estado), shape = RoundedCornerShape(50)) {
+    // Al cambiar el estado, el color pasa suavemente del anterior al nuevo
+    val color by animateColorAsState(colorEstado(estado), animationSpec = tween(400), label = "colorEstado")
+    Surface(color = color, shape = RoundedCornerShape(50)) {
         Text(
             estado.etiqueta, color = Color.White, style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
@@ -183,9 +222,10 @@ fun OportunidadCard(
     o: OportunidadEntity,
     onEditar: (() -> Unit)? = null,
     onEliminar: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Card(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 5.dp).clickable(onClick = onClick)) {
+    Card(modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 5.dp).clickable(onClick = onClick)) {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(

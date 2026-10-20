@@ -1,5 +1,6 @@
 package cl.duoc.activaciones.ui.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ import cl.duoc.activaciones.ui.components.vmFactory
 import cl.duoc.activaciones.ui.theme.barraColores
 import cl.duoc.activaciones.viewmodel.OportunidadViewModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListaOportunidadesScreen(
     alVolver: () -> Unit,
@@ -128,7 +130,11 @@ fun ListaOportunidadesScreen(
             }
             LazyColumn(Modifier.fillMaxSize()) {
                 items(lista, key = { it.id }) { o ->
-                    OportunidadCard(o, onEditar = { alEditar(o.id) }, onEliminar = { porEliminar = o }) { alAbrir(o.id) }
+                    // animateItemPlacement: las tarjetas se reacomodan con animación al filtrar, crear o eliminar
+                    OportunidadCard(
+                        o, onEditar = { alEditar(o.id) }, onEliminar = { porEliminar = o },
+                        modifier = Modifier.animateItemPlacement()
+                    ) { alAbrir(o.id) }
                 }
             }
         }

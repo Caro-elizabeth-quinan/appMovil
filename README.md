@@ -1,6 +1,8 @@
 # ActivacionesApp — DSY1105 (007D)
 
 App Android (Kotlin + Jetpack Compose) para gestión móvil de oportunidades y activaciones corporativas.
+
+**Integrantes:** Raysa Aguilera y Carolina Quinan · Sección 007D · Docente: Vicente Zapata
 Paleta rosa / morado (`ui/theme/Theme.kt`).
 
 ## Cómo ejecutarla
@@ -51,6 +53,8 @@ Vista → ViewModel (UiState + StateFlow, validaciones) → Repository → DAO �
 | Formulario + ViewModel compartido (Guía 11) | `RegistroScreen` → `ResumenScreen` con `UsuarioViewModel` |
 | Asignar responsable | Supervisor elige el ejecutivo en `OportunidadFormScreen` |
 | Filtros | Texto, estado, prioridad, tipo, región, fecha, organización y responsable |
+| Íconos en validaciones | `Campo`, `CampoSelector` y `RegistroScreen` muestran un ícono de advertencia en cada campo con error |
+| Animaciones | Transiciones entre pantallas (`AppNavigation`), aviso de error con `AnimatedVisibility`, color animado del estado (`EstadoChip`) y reacomodo animado de la lista (`animateItemPlacement`) |
 
 Campos obligatorios: nombre, tipo, descripción, fuente, prioridad, potencial (Alto/Medio/Bajo) y estado
 (por defecto "Evento identificado"). Observaciones y datos del evento son opcionales.

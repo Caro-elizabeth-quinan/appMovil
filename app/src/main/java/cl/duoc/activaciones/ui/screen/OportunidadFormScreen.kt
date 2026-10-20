@@ -48,6 +48,7 @@ import cl.duoc.activaciones.model.Prioridad
 import cl.duoc.activaciones.model.REGIONES
 import cl.duoc.activaciones.model.TipoEvento
 import cl.duoc.activaciones.model.comunasDe
+import cl.duoc.activaciones.ui.components.AvisoError
 import cl.duoc.activaciones.ui.components.Campo
 import cl.duoc.activaciones.ui.components.CampoSelector
 import cl.duoc.activaciones.ui.components.app
@@ -217,9 +218,7 @@ fun OportunidadFormScreen(
                 }
             }
 
-            if (estado.tieneErrores) {
-                Text("Revisa los campos marcados en rojo.", color = MaterialTheme.colorScheme.error)
-            }
+            AvisoError(estado.tieneErrores, "Revisa los campos marcados en rojo.")
             Spacer(Modifier.height(8.dp))
             Button(
                 onClick = vm::guardar,
